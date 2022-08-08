@@ -31,7 +31,7 @@ def get(query_param: str) -> Union[Article, None]:  # by id, uuid, title
 
     result: Union[MutableMapping, None] = news.find_one(filter_by)
     try:
-        return Article(**result)
+        return Article(**result)  # type: ignore
     except TypeError:
         return None
 

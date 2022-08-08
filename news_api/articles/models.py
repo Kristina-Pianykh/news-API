@@ -12,10 +12,8 @@ from pydantic import Field, validator
 def is_future_date(date_input: datetime) -> bool:
     now = datetime.now()
     if date_input.timestamp() < now.timestamp():
-        print(date_input)
         return False
     else:
-        print(date_input)
         return True
 
 
@@ -23,12 +21,12 @@ def is_future_date(date_input: datetime) -> bool:
 #     return f"0{date_input}" if date_input < 10 else str(date_input)
 
 
-# class FormattedDate(datetime):
-#     def __repr__(self):
-#         # day = f"{add_padding(self.day)}"
-#         # month = f"{add_padding(self.month)}"
-#         return self.strftime("%d-%m-%Y")
-#         # return f"{day}-{month}-{self.year}"
+class FormattedDate(datetime):
+    def __repr__(self):
+        # day = f"{add_padding(self.day)}"
+        # month = f"{add_padding(self.month)}"
+        return self.strftime("%d-%m-%Y")
+        # return f"{day}-{month}-{self.year}"
 
 
 class FutureDate(Exception):
@@ -37,15 +35,16 @@ class FutureDate(Exception):
 
 class CustomBaseModel(PydanticBaseModel):
     class Config:
+        allow_population_by_field_name = True
         arbitrary_types_allowed = True
 
 
 class Article(CustomBaseModel):
-    id: Optional[ObjectId]
+    id: Optional[ObjectId] = Field(alias="_id")
     uuid: UUID = Field(default_factory=uuid4)
     title: str
     text: str
-    date: datetime = Field(default_factory=datetime.utcnow)
+    date: FormattedDate = Field(default_factory=datetime.utcnow)
     author: str
     genre: Optional[str]
     tags: Optional[list[str]]
@@ -78,3 +77,7 @@ class Article(CustomBaseModel):
     def validate_no_future_date(cls, value):
         if is_future_date(value):
             raise FutureDate("Invalid (future) date")
+
+    @validator("title", pre=True)
+    def lower_case_title(cls, value) -> str:
+        return value.lower()
