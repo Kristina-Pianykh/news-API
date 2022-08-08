@@ -8,6 +8,8 @@ authors = ["Kristina Pianykh <kristinavrnrus@gmail.com>"]
 python = "^3.10"
 fastapi = "^0.79.0"
 uvicorn = {extras = ["standard"], version = "^0.18.2"}
+bson = "^0.5.10"
+pymongo = "^4.2.0"
 
 [tool.poetry.dev-dependencies]
 black = "^22.6.0"
