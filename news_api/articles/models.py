@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, Union
+from typing import Optional
 from uuid import UUID, uuid4
 
 from bson.errors import InvalidId
@@ -12,8 +12,10 @@ from pydantic import Field, validator
 def is_future_date(date_input: datetime) -> bool:
     now = datetime.now()
     if date_input.timestamp() < now.timestamp():
+        print(date_input)
         return False
     else:
+        print(date_input)
         return True
 
 
@@ -39,7 +41,8 @@ class CustomBaseModel(PydanticBaseModel):
 
 
 class Article(CustomBaseModel):
-    article_id: Union[UUID, ObjectId] = Field(default_factory=uuid4)
+    id: Optional[ObjectId]
+    uuid: UUID = Field(default_factory=uuid4)
     title: str
     text: str
     date: datetime = Field(default_factory=datetime.utcnow)
@@ -47,7 +50,7 @@ class Article(CustomBaseModel):
     genre: Optional[str]
     tags: Optional[list[str]]
 
-    @validator("article_id", pre=True)
+    @validator("id", pre=True)
     def convert_to_objectid(cls, value):
         try:
             valid_id = ObjectId(value)
@@ -71,7 +74,7 @@ class Article(CustomBaseModel):
         else:
             return parse(value, dayfirst=True)
 
-    @validator("date")
+    @validator("date", pre=True)
     def validate_no_future_date(cls, value):
         if is_future_date(value):
             raise FutureDate("Invalid (future) date")
