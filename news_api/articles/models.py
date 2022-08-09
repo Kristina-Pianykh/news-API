@@ -1,12 +1,14 @@
+import json
 from datetime import datetime
-from typing import Optional
-from uuid import UUID, uuid4
+from typing import Any, Optional
 
 from bson.errors import InvalidId
 from bson.objectid import ObjectId
 from dateutil.parser import parse
 from pydantic import BaseModel as PydanticBaseModel
 from pydantic import Field, validator
+
+# from uuid import UUID, uuid4
 
 
 def is_future_date(date_input: datetime) -> bool:
@@ -17,18 +19,6 @@ def is_future_date(date_input: datetime) -> bool:
         return True
 
 
-# def add_padding(date_input: int) -> str:
-#     return f"0{date_input}" if date_input < 10 else str(date_input)
-
-
-class FormattedDate(datetime):
-    def __repr__(self):
-        # day = f"{add_padding(self.day)}"
-        # month = f"{add_padding(self.month)}"
-        return self.strftime("%d-%m-%Y")
-        # return f"{day}-{month}-{self.year}"
-
-
 class FutureDate(Exception):
     pass
 
@@ -37,16 +27,19 @@ class CustomBaseModel(PydanticBaseModel):
     class Config:
         allow_population_by_field_name = True
         arbitrary_types_allowed = True
+        json_encoders = {
+            datetime: lambda v: str(v.timestamp()),
+            ObjectId: lambda v: str(v),
+        }
 
 
 class Article(CustomBaseModel):
     id: Optional[ObjectId] = Field(alias="_id")
-    uuid: UUID = Field(default_factory=uuid4)
+    # uuid: UUID = Field(default_factory=uuid4)
     title: str
     text: str
-    date: FormattedDate = Field(default_factory=datetime.utcnow)
+    date: datetime = Field(default_factory=datetime.utcnow)  # not created by default
     author: str
-    genre: Optional[str]
     tags: Optional[list[str]]
 
     @validator("id", pre=True)
@@ -71,13 +64,22 @@ class Article(CustomBaseModel):
         if isinstance(value, datetime):
             return value
         else:
-            return parse(value, dayfirst=True)
+            return parse(value, dayfirst=False)
 
-    @validator("date", pre=True)
-    def validate_no_future_date(cls, value):
+    @validator("date")
+    def validate_no_future_date(cls, value) -> datetime:
         if is_future_date(value):
-            raise FutureDate("Invalid (future) date")
+            raise FutureDate("Invalid (future) date")  # TODO: display to user
+        else:
+            return value
 
     @validator("title", pre=True)
     def lower_case_title(cls, value) -> str:
-        return value.lower()
+        return value.title()
+
+
+def format_response(article: Article) -> dict[str, Any]:
+    model_to_json = article.json(
+        exclude_none=True, exclude_unset=True, models_as_dict=False
+    )
+    return json.loads(model_to_json)
