@@ -1,4 +1,4 @@
-from typing import MutableMapping, Union
+from typing import Any, MutableMapping, Union
 
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
@@ -58,6 +58,7 @@ def delete(article_id: str):
     news.delete_one(filter_by)
 
 
-def create(article: Article) -> str:
+def create(input_data: dict[str, Any]) -> str:
+    article = Article(**input_data)
     result = news.insert_one(article.dict(exclude_none=True))
     return str(result.inserted_id)

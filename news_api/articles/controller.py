@@ -26,9 +26,8 @@ async def get_many(query_item: str):
 
 
 @router.post("/")
-async def create_article(request_body: dict[str, Any]) -> str:
-    article = Article(**request_body)
-    inserted_id = service.create(article)
+async def create_article(input_data: dict[str, Any]) -> str:
+    inserted_id = service.create(input_data)
     return inserted_id
 
 
