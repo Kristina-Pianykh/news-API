@@ -1,85 +1,58 @@
-import json
 from datetime import datetime
-from typing import Any, Optional
+from typing import Optional
 
-from bson.errors import InvalidId
+from pydantic.errors import DateNotInThePastError
 from bson.objectid import ObjectId
 from dateutil.parser import parse
 from pydantic import BaseModel as PydanticBaseModel
 from pydantic import Field, validator
 
-# from uuid import UUID, uuid4
 
+class PastDate(datetime):
+    """
+    A similar structure to pydantic.types.PastDate but inheriting
+    from datetime to allow comparisons with the entries added today
+    """
 
-def is_future_date(date_input: datetime) -> bool:
-    now = datetime.now()
-    if date_input.timestamp() < now.timestamp():
-        return False
-    else:
-        return True
+    @classmethod
+    def __get_validators__(cls):
+        yield cls.validate
 
+    @classmethod
+    def validate(cls, value: datetime) -> datetime:
+        if value >= datetime.now():
+            raise DateNotInThePastError()
 
-class FutureDate(Exception):
-    pass
+        return value
 
 
 class CustomBaseModel(PydanticBaseModel):
     class Config:
         allow_population_by_field_name = True
         arbitrary_types_allowed = True
-        json_encoders = {
-            datetime: lambda v: str(v.timestamp()),
-            ObjectId: lambda v: str(v),
-        }
 
 
 class Article(CustomBaseModel):
-    id: Optional[ObjectId] = Field(alias="_id")
-    # uuid: UUID = Field(default_factory=uuid4)
+    id: Optional[str] = Field(alias="_id")
     title: str
     text: str
-    date: datetime = Field(default_factory=datetime.utcnow)  # not created by default
+    date: PastDate = Field(default_factory=datetime.utcnow().date)
     author: str
-    tags: Optional[list[str]]
 
     @validator("id", pre=True)
-    def convert_to_objectid(cls, value):
-        try:
-            valid_id = ObjectId(value)
-            return valid_id
-        except (InvalidId, TypeError):
-            raise ValueError("Invalid article id")
-
-    @validator("tags")
-    def validate_tags_as_list(cls, values):
-        for val in values:
-            try:
-                assert isinstance(val, str)
-                assert len(val) < 30
-            except AssertionError:
-                raise ValueError("Invalid tag")
+    def convert_to_objectid(cls, value) -> str:
+        if isinstance(value, ObjectId):
+            return str(value)
+        else:
+            return value
 
     @validator("date", pre=True)
-    def format_raw_date(cls, value) -> datetime:
-        if isinstance(value, datetime):
-            return value
-        else:
-            return parse(value, dayfirst=False)
-
-    @validator("date")
-    def validate_no_future_date(cls, value) -> datetime:
-        if is_future_date(value):
-            raise FutureDate("Invalid (future) date")  # TODO: display to user
-        else:
+    def format_raw_date(cls, value) -> PastDate:
+        if isinstance(value, str):
+            return parse(value)
+        else:  # datetime type
             return value
 
-    @validator("title", pre=True)
+    @validator("title", "author", pre=True)
     def lower_case_title(cls, value) -> str:
         return value.title()
-
-
-def format_response(article: Article) -> dict[str, Any]:
-    model_to_json = article.json(
-        exclude_none=True, exclude_unset=True, models_as_dict=False
-    )
-    return json.loads(model_to_json)
