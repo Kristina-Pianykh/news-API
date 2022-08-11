@@ -37,7 +37,7 @@ async def create_article(input_data: dict[str, Any]) -> str:
 @router.delete("/{article_id}")
 async def delete_articles(article_id: str, response: Response):
     deleted_articles = service.delete(article_id)
-    if deleted_articles == 1:
+    if deleted_articles == 0:
         response.status_code = status.HTTP_404_NOT_FOUND
     elif deleted_articles < 0:
         raise InvalidIdError(article_id)
