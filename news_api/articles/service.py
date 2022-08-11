@@ -52,10 +52,14 @@ def update(article_id: str, new_values: Article) -> Union[Article, None]:
         return new_values
 
 
-def delete(article_id: str):
+def delete(article_id: str) -> int:
     filter_by: Document = {}
-    filter_by["_id"] = ObjectId(article_id)
-    news.delete_one(filter_by)
+    try:
+        filter_by["_id"] = ObjectId(article_id)
+    except (TypeError, InvalidId):
+        return -1
+    result = news.delete_one(filter_by)
+    return result.deleted_count
 
 
 def create(input_data: dict[str, Any]) -> str:
