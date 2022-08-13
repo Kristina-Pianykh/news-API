@@ -1,11 +1,11 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic.errors import DateNotInThePastError
 from bson.objectid import ObjectId
 from dateutil.parser import parse
 from pydantic import BaseModel as PydanticBaseModel
 from pydantic import Field, validator
+from pydantic.errors import DateNotInThePastError
 
 
 class PastDate(datetime):
@@ -49,7 +49,7 @@ class Article(CustomBaseModel):
     @validator("date", pre=True)
     def format_raw_date(cls, value) -> PastDate:
         if isinstance(value, str):
-            return parse(value)
+            return parse(value)  # type: ignore
         else:  # datetime type
             return value
 

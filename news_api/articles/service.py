@@ -1,7 +1,7 @@
-from typing import Any, MutableMapping, Union
+from typing import Any, MutableMapping, Optional, Union
 
-from bson.objectid import ObjectId
 from bson.errors import InvalidId
+from bson.objectid import ObjectId
 from pymongo import MongoClient
 
 from .models import Article
@@ -16,35 +16,28 @@ Document = MutableMapping[
 ]
 
 
-def get_one(query_param: str) -> Union[Article, None]:  # by id or title
-    filter_by: Document = {}
+def get_one(article_id: str) -> Optional[Article]:
     try:
-        filter_by["_id"] = ObjectId(query_param)
+        object_id = ObjectId(article_id)
     except (ValueError, InvalidId):
-        filter_by["title"] = query_param
+        return
 
-    result = news.find_one(filter_by)
-    if result:
+    if result := news.find_one({"_id": object_id}):
         article = Article(**result)
         return article
-    else:
-        return None
 
 
-def get_many(author: str) -> list[Article]:
+def get_many(query_param: str, field_name: str) -> list[Article]:
     articles: list[Article] = []
-    filter_by = {"author": author.title()}
-    results = news.find(filter_by)
-    if results:
+    filter_by = {field_name: query_param.title()}
+    if results := news.find(filter_by):
         articles = [Article(**record) for record in results]
     return articles
 
 
-def update(article_id: str, new_values: Article) -> Union[Article, None]:
-    article: Union[Article, None] = get_one(article_id)
-    if not article:
-        return None
-    else:
+def update(article_id: str, new_values: Article) -> Optional[Article]:
+    article: Optional[Article] = get_one(article_id)
+    if article:
         filter_by = {"_id": ObjectId(article.id)}
         values_to_update = {"$set": new_values.dict(exclude={"_id"})}
         news.update_one(filter_by, values_to_update, upsert=False)
@@ -53,16 +46,15 @@ def update(article_id: str, new_values: Article) -> Union[Article, None]:
 
 
 def delete(article_id: str) -> int:
-    filter_by: Document = {}
     try:
-        filter_by["_id"] = ObjectId(article_id)
+        object_id = ObjectId(article_id)
     except (TypeError, InvalidId):
         return -1
-    result = news.delete_one(filter_by)
+    result = news.delete_one({"_id": object_id})
     return result.deleted_count
 
 
-def create(input_data: dict[str, Any]) -> str:
+def create(input_data: dict[str, Any]) -> Article:
     article = Article(**input_data)
-    result = news.insert_one(article.dict(exclude_none=True))
-    return str(result.inserted_id)
+    news.insert_one(article.dict())
+    return article
