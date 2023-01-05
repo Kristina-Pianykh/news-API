@@ -1,6 +1,23 @@
 version: '3'
 services:
-  mongo:
+  app:
+    build:
+      dockerfile: Dockerfile
+    container_name: app
+    ports:
+      - 3000:3000
+    # env_file:
+    #   - ./.env
+    environment:
+      - "DB_CONNECTION_STRING=mongodb://mongo:27017/main"
+    depends_on:
+      - mongodb
+  mongodb:
     image: mongo
+    container_name: mongodb
     ports:
       - 27017:27017
+#     volumes:
+#       - path/to/local/db/in/repo:/data/db
+# volumes:
+#   path/to/local/db/in/repo:
