@@ -6,10 +6,11 @@
     "configurations": [
         {
             "name": "API",
+            "cwd": "${workspaceFolder}/news_api",
             "type": "python",
             "request": "launch",
             "module": "uvicorn",
-            "args": ["news_api.api:app","--reload"]
+            "args": ["api:app","--reload"]
         },
         {
             "name": "Current File",

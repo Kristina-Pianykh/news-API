@@ -1,7 +1,9 @@
 import uvicorn
 from fastapi import FastAPI
 
-from .articles import router as articles_router
+# from .articles import router as articles_router
+
+from articles.controller import router as articles_router
 
 # from fastapi import FastAPI, HTTPException, Request
 # from fastapi.responses import JSONResponse
