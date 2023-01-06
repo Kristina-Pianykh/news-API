@@ -3,13 +3,13 @@ services:
   app:
     build:
       dockerfile: Dockerfile
-    container_name: app
+    container_name: myapp
     ports:
       - 3000:3000
     # env_file:
     #   - ./.env
     environment:
-      - "DB_CONNECTION_STRING=mongodb://mongo:27017/main"
+        DB_CONNECTION_STRING: mongodb://mongo:27017/
     depends_on:
       - mongodb
   mongodb:
@@ -17,7 +17,9 @@ services:
     container_name: mongodb
     ports:
       - 27017:27017
-#     volumes:
-#       - path/to/local/db/in/repo:/data/db
-# volumes:
-#   path/to/local/db/in/repo:
+    volumes:
+      - mongodb:/data/db
+
+volumes:
+  mongodb:
+   name: my_volume
