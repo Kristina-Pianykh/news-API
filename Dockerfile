@@ -1,36 +1,18 @@
-FROM python:3.10-slim as python-base
-
-# make poetry install to this location
-ENV POETRY_HOME="/opt/poetry" \
-    # it gets named `.venv`
-    POETRY_VIRTUALENVS_IN_PROJECT=true
-
-# prepend poetry and venv to path
-ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
-
-
-# `builder-base` stage is used to build deps + create our virtual environment
-RUN apt-get update \
-    && apt-get install --no-install-recommends -y \
-    # deps for installing poetry
-    curl \
-    # deps for building python deps
-    build-essential
+FROM python:3.10.9 as build
+WORKDIR /build
 
 RUN curl -sSL https://install.python-poetry.org | python -
+ENV PATH /root/.local/bin:$PATH
+COPY pyproject.toml poetry.lock ./
+RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
 
-RUN mkdir app
-WORKDIR /app
-
-COPY . .
-
-# install runtime deps - uses $POETRY_VIRTUALENVS_IN_PROJECT internally
-RUN poetry install --no-dev
+FROM python:3.10.9-slim
+WORKDIR /api
+COPY --from=build /build/requirements.txt ./
+RUN pip install -r requirements.txt
+COPY news_api .
 
 # expose port
-EXPOSE 8000
+# EXPOSE 8000
 
-WORKDIR /app/news_api
-
-# # start app
-CMD poetry run uvicorn api:app --reload
+ENTRYPOINT ["uvicorn", "--host", "0.0.0.0", "api:app"]
