@@ -10,7 +10,10 @@
             "type": "python",
             "request": "launch",
             "module": "uvicorn",
-            "args": ["api:app","--reload"]
+            "args": ["api:app","--reload"],
+            "env": {
+                "DB_CONNECTION_STRING": "mongodb://mongo:27017/"
+            }
         },
         {
             "name": "Current File",
