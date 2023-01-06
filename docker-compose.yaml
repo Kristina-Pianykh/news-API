@@ -1,11 +1,10 @@
 version: '3'
 services:
   app:
-    build:
-      dockerfile: Dockerfile
+    build: .
     container_name: myapp
     ports:
-      - 3000:3000
+      - 8000:8000
     # env_file:
     #   - ./.env
     environment:
