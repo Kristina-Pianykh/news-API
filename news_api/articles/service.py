@@ -1,4 +1,5 @@
 from typing import Any, MutableMapping, Optional, Union
+import os
 
 from bson.errors import InvalidId
 from bson.objectid import ObjectId
@@ -6,7 +7,9 @@ from pymongo import MongoClient
 
 from .models import Article
 
-client = MongoClient("mongodb://127.0.0.1:27017")
+
+connection_string = os.environ['DB_CONNECTION_STRING']
+client = MongoClient(connection_string)
 db = client.local
 news = db.news
 
