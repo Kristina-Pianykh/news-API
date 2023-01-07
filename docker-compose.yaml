@@ -4,10 +4,12 @@ services:
     build: .
     container_name: myapp
     ports:
-      - 8000:8000
-    env_file:
-      - ./.env
+      - 8000:${APP_PORT}
+    # env_file:
+    #   - .env
     environment:
+        APP_PORT: ${APP_PORT}
+        APP_HOST: ${APP_HOST}
         DB_CONNECTION_STRING: mongodb://mongo:27017/
     depends_on:
       - mongodb
