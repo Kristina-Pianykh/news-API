@@ -6,7 +6,7 @@ services:
     ports:
       - 8000:8000
     env_file:
-      - .env
+      - ./.env
     environment:
         DB_CONNECTION_STRING: mongodb://mongo:27017/
     depends_on:
