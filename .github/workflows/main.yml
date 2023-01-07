@@ -29,9 +29,13 @@ jobs:
       run: |
         echo "http_status=$(curl -o /dev/null -s -w "%{http_code}\n" http://localhost:8000)" >> $GITHUB_OUTPUT
 
+    - name: Test Step
+      run: |
+        echo "steps.test_api.outputs.http_status"
+
     - name: Stop Containers on Status Code 200
       if: steps.test_api.outputs.http_status == 200
-      run: docker-compose -f "docker-compose.yml" down
+      run: docker compose down
 
     - name: Fail Job on unreachable API
       if: steps.test_api.outputs.http_status != 200
