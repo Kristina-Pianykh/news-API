@@ -5,8 +5,8 @@ services:
     container_name: myapp
     ports:
       - 8000:8000
-    # env_file:
-    #   - ./.env
+    env_file:
+      - .env
     environment:
         DB_CONNECTION_STRING: mongodb://mongo:27017/
     depends_on:

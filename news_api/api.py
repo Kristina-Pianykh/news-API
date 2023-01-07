@@ -1,4 +1,5 @@
 import uvicorn
+import os
 from fastapi import FastAPI
 
 # from .articles import router as articles_router
@@ -32,4 +33,6 @@ def root():
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    host = os.environ['APP_HOST']
+    port = os.environ['APP_PORT']
+    uvicorn.run(app, host=host, port=port)
