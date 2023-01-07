@@ -31,7 +31,7 @@ jobs:
 
     - name: Test Step
       run: |
-        echo "steps.test_api.outputs.http_status"
+        echo "Status code: ${{ steps.test_api.outputs.http_status}}"
 
     - name: Stop Containers on Status Code 200
       if: steps.test_api.outputs.http_status == 200
