@@ -7,13 +7,33 @@ on:
       - dependabot/**
 
 jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install poetry
+        uses: snok/install-poetry@v1
+
+      - name: Set up python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'poetry'
+
+      - name: run pre-commit hooks
+        uses: pre-commit/action@v3
+
+
   docker:
     timeout-minutes: 10
     runs-on: ubuntu-latest
+    needs: [pre-commit]
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+    # - name: Checkout
+    #   uses: actions/checkout@v3
 
     - name: Start Containers
       run: docker compose up -d --build
