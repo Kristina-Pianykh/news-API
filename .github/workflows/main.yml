@@ -31,9 +31,9 @@ jobs:
 
             - name: run pre-commit hooks
               uses: pre-commit/action@v3.0.0
-              with:
-                  extra_args: check-yaml end-of-file-fixer trailing-whitespace check-merge-conflict debug-statements check-toml detect-private-key yamllint
-                      autoflake black flake8 --all-files
+              # with:
+              #     extra_args: check-yaml end-of-file-fixer trailing-whitespace check-merge-conflict debug-statements check-toml detect-private-key yamllint
+              #         autoflake black flake8 --all-files
 
 
     docker:
