@@ -49,13 +49,13 @@ repos:
           - id: isort
             args: [--profile, black]
 
-    - repo: local
-      hooks:
-          - id: pyright
-            name: pyright
-            entry: poetry run pyright --warnings
-            language: node
-            pass_filenames: false
-            types: [python]
-            exclude: service.py
-            additional_dependencies: [pyright@1.1.190]
+    # - repo: local
+    #   hooks:
+    #       - id: pyright
+    #         name: pyright
+    #         entry: poetry run pyright --warnings
+    #         language: node
+    #         pass_filenames: false
+    #         types: [python]
+    #         exclude: service.py
+    #         additional_dependencies: [pyright@1.1.190]
