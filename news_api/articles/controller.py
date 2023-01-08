@@ -2,8 +2,8 @@ from typing import Any
 
 from fastapi import APIRouter, HTTPException, Response, status
 
-from .service import get_one, get_many, create, delete, update
 from .models import Article
+from .service import create, delete, get_many, get_one, update
 
 router = APIRouter(prefix="/articles")
 

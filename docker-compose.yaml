@@ -1,26 +1,27 @@
+---
 version: '3'
 services:
-  app:
-    build: .
-    container_name: myapp
-    ports:
-      - 8000:${APP_PORT}
-    # env_file:
-    #   - .env
-    environment:
-        APP_PORT: ${APP_PORT}
-        APP_HOST: ${APP_HOST}
-        DB_CONNECTION_STRING: mongodb://mongo:27017/
-    depends_on:
-      - mongodb
-  mongodb:
-    image: mongo
-    container_name: mongodb
-    ports:
-      - 27017:27017
-    volumes:
-      - mongodb:/data/db
+    app:
+        build: .
+        container_name: myapp
+        ports:
+            - 8000:${APP_PORT}
+        # env_file:
+        #   - .env
+        environment:
+            APP_PORT: ${APP_PORT}
+            APP_HOST: ${APP_HOST}
+            DB_CONNECTION_STRING: mongodb://mongo:27017/
+        depends_on:
+            - mongodb
+    mongodb:
+        image: mongo
+        container_name: mongodb
+        ports:
+            - 27017:27017
+        volumes:
+            - mongodb:/data/db
 
 volumes:
-  mongodb:
-   name: my_volume
+    mongodb:
+        name: my_volume
