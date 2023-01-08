@@ -1,62 +1,62 @@
+---
 name: Integration Test
 
 on:
-  push:
-  pull_request:
-    branches:
-      - dependabot/**
+    push:
+    pull_request:
+        branches:
+            - dependabot/**
 
 jobs:
-  pre-commit:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+    pre-commit:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
 
-      - name: Install poetry
-        uses: snok/install-poetry@v1
+            - name: Install poetry
+              uses: snok/install-poetry@v1
 
-      - name: Set up python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-          cache: 'poetry'
+            - name: Set up python
+              uses: actions/setup-python@v4
+              with:
+                  python-version: '3.10'
+                  cache: poetry
 
-      - name: run pre-commit hooks
-        uses: pre-commit/action@v3.0.0
+            - name: run pre-commit hooks
+              uses: pre-commit/action@v3.0.0
 
 
-  docker:
-    timeout-minutes: 10
-    runs-on: ubuntu-latest
-    needs: [pre-commit]
+    docker:
+        timeout-minutes: 10
+        runs-on: ubuntu-latest
+        needs: [pre-commit]
 
-    steps:
-    # - name: Checkout
-    #   uses: actions/checkout@v3
+        steps:
+          # - name: Checkout
+          #   uses: actions/checkout@v3
 
-    - name: Start Containers
-      run: docker compose up -d --build
+            - name: Start Containers
+              run: docker compose up -d --build
 
-    - name: Sleep for 2 Minutes
-      uses: jakejarvis/wait-action@master
-      with:
-        time: '120s'
+            - name: Sleep for 2 Minutes
+              uses: jakejarvis/wait-action@master
+              with:
+                  time: 120s
 
-    - name: Test API Reachability
-      id: test_api
-      run: |
-        echo "http_status=$(curl -o /dev/null -s -w "%{http_code}\n" http://localhost:8000)" >> $GITHUB_OUTPUT
+            - name: Test API Reachability
+              id: test_api
+              run: |
+                  echo "http_status=$(curl -o /dev/null -s -w "%{http_code}\n" http://localhost:8000)" >> $GITHUB_OUTPUT
 
-    - name: Test Step
-      run: |
-        echo "Status code: ${{ steps.test_api.outputs.http_status}}"
+            - name: Test Step
+              run: |
+                  echo "Status code: ${{ steps.test_api.outputs.http_status}}"
 
-    - name: Stop Containers on Status Code 200
-      if: steps.test_api.outputs.http_status == 200
-      run: docker compose down
+            - name: Stop Containers on Status Code 200
+              if: steps.test_api.outputs.http_status == 200
+              run: docker compose down
 
-    - name: Fail Job on unreachable API
-      if: steps.test_api.outputs.http_status != 200
-      run: exit 1
-    
+            - name: Fail Job on unreachable API
+              if: steps.test_api.outputs.http_status != 200
+              run: exit 1

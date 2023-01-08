@@ -1,10 +1,11 @@
-import uvicorn
 import os
+
+import uvicorn
+from articles.controller import router as articles_router
 from fastapi import FastAPI
 
 # from .articles import router as articles_router
 
-from articles.controller import router as articles_router
 
 # from fastapi import FastAPI, HTTPException, Request
 # from fastapi.responses import JSONResponse
@@ -33,6 +34,6 @@ def root():
 
 
 if __name__ == "__main__":
-    host = os.environ['APP_HOST']
-    port = os.environ['APP_PORT']
+    host = os.environ["APP_HOST"]
+    port = os.environ["APP_PORT"]
     uvicorn.run(app, host=host, port=port)
