@@ -1,0 +1,10 @@
+---
+extends: default
+
+ignore: |
+  .venv/
+
+rules:
+  line-length: disable
+  comments-indentation: disable
+  truthy: disable
