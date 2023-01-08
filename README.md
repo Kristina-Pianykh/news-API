@@ -1,3 +1,6 @@
+[![CodeQL](https://github.com/Kristina-Pianykh/news-API/actions/workflows/codeql.yml/badge.svg)](https://github.com/Kristina-Pianykh/news-API/actions/workflows/codeql.yml)
+[![Integration Test](https://github.com/Kristina-Pianykh/news-API/actions/workflows/main.yml/badge.svg)](https://github.com/Kristina-Pianykh/news-API/actions/workflows/main.yml)
+
 # Description
 
 ...
