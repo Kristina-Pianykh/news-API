@@ -12,13 +12,13 @@ To run the app, you need to have the following installed:
 If you use the Compose plugin, run the app with:
 
 ```zsh
-docker compose up --build
+docker compose up -d --build
 ```
 
 or, if you use the Compose standalone, with:
 
 ```zsh
-docker-compose up --build
+docker-compose up -d --build
 ```
 
 The app is available on [`http://localhost:8000/`](http://localhost:8000/)
