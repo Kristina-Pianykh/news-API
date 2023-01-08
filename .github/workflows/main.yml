@@ -20,7 +20,7 @@ jobs:
             - name: Set up python
               uses: actions/setup-python@v4
               with:
-                  python-version: '3.11'
+                  python-version: '3.10'
                   cache: poetry
 
             - name: Install py dependencies
@@ -30,9 +30,10 @@ jobs:
                   pip install -r requirements.txt
 
             - name: run pre-commit hooks
-              # uses: pre-commit/action@v3.0.0
-              run: |
-                pre-commit run --all-files
+              uses: pre-commit/action@v3.0.0
+              with:
+                  extra_args: check-yaml end-of-file-fixer \ trailing-whitespace check-merge-conflict \ debug-statements check-toml detect-private-key \
+                      yamllint autoflake black flake8 --all-files
 
 
     docker:
