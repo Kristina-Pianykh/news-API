@@ -26,7 +26,7 @@ jobs:
             - name: Install py dependencies
               run: |
                   python -m pip install --upgrade pip
-                  poetry export -f requirements.txt --output requirements.txt
+                  poetry export --with dev -f requirements.txt --output requirements.txt
                   pip install -r requirements.txt
 
             - name: run pre-commit hooks
