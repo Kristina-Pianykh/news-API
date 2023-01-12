@@ -10,6 +10,8 @@ fastapi = "^0.89.0"
 uvicorn = {extras = ["standard"], version = "^0.20.0"}
 pymongo = "^4.2.0"
 python-dateutil = "^2.8.2"
+tqdm = "^4.64.1"
+faker = "^16.3.0"
 
 [tool.poetry.dev-dependencies]
 black = "^22.6.0"
@@ -24,6 +26,9 @@ build-backend = "poetry.core.masonry.api"
 [tool.isort]
 profile = "black"
 multi_line_output = 3
+
+[tool.black]
+line-length = 100
 
 [tool.pyright]
 include = ["news_api/**/*"]

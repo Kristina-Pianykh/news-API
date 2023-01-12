@@ -6,11 +6,13 @@ from bson.objectid import ObjectId
 from pymongo import MongoClient
 
 from .models import Article
+from .db_data_generation import news
 
-connection_string = os.environ["DB_CONNECTION_STRING"]
-client = MongoClient(connection_string)
-db = client.local
-news = db.news
+# connection_string = "mongodb://localhost:27017"
+# connection_string = os.environ["DB_CONNECTION_STRING"]
+# client = MongoClient(connection_string)
+# db = client.local
+# news = db.news
 
 Document = MutableMapping[
     str,

@@ -46,9 +46,7 @@ async def delete_articles(article_id: str, response: Response):
         )
 
 
-@router.put(
-    "/{article_id}", response_model=Article, status_code=status.HTTP_201_CREATED
-)
+@router.put("/{article_id}", response_model=Article, status_code=status.HTTP_201_CREATED)
 async def update_articles(article_id: str, new_values: Article, response: Response):
     if updated_article := update(article_id, new_values):
         return updated_article

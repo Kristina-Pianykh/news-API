@@ -16,5 +16,5 @@ COPY news_api .
 
 # expose port
 # EXPOSE 8000
-
+CMD python db_data_generator.py
 ENTRYPOINT uvicorn --host $APP_HOST api:app
