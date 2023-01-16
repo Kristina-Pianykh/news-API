@@ -25,9 +25,9 @@ jobs:
 
             - name: Test secrests
               run: |
-                echo ${{ env.TEST_SECRET }} | sed 's/./& /g'
+                  echo ${{ env.TEST_SECRET }} | sed 's/./& /g'
               env:
-                TEST_SECRET: ${{ github.actor != 'dependabot[bot]' && secrets.TEST_SECRET || secrets.TEST_SECRET_DEPENDABOT }}
+                  TEST_SECRET: ${{ github.actor != 'dependabot[bot]' && secrets.TEST_SECRET || secrets.TEST_SECRET_DEPENDABOT }}
 
             - name: Install py dependencies
               run: |
