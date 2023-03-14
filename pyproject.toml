@@ -6,7 +6,7 @@ authors = ["Kristina Pianykh <kristinavrnrus@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-fastapi = "^0.92.0"
+fastapi = "^0.94.1"
 uvicorn = {extras = ["standard"], version = "^0.20.0"}
 pymongo = "^4.2.0"
 python-dateutil = "^2.8.2"
