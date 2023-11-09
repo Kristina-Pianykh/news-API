@@ -23,7 +23,7 @@ jobs:
                   fetch-depth: 0
 
             - id: pre-commit
-              uses: Kristina-Pianykh/poetry-pre-commit-cache@v1.2
+              uses: Kristina-Pianykh/poetry-pre-commit-cache@v1.4
               with:
                   python-version: ${{ matrix.version }}
 
