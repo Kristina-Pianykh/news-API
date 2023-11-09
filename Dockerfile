@@ -11,6 +11,9 @@ ENV APP_HOST ${APP_HOST:-"0.0.0.0"}
 ENV APP_PORT ${APP_PORT:-8000}
 WORKDIR /api
 COPY --from=build /build/requirements.txt ./
+# install Cython below 3.0 and pin PyYaml to 6.0 (current version in poetry.lock)
+# subject to change once https://github.com/yaml/pyyaml/issues/601 is resolved
+RUN pip install "Cython<3.0" "pyyaml==6.0" --no-build-isolation
 RUN pip install -r requirements.txt
 COPY news_api .
 
