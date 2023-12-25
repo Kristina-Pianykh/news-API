@@ -1,4 +1,4 @@
-FROM python:3.12.0 as build
+FROM python:3.12.1 as build
 WORKDIR /build
 
 RUN curl -sSL https://install.python-poetry.org | python -
@@ -6,7 +6,7 @@ ENV PATH /root/.local/bin:$PATH
 COPY pyproject.toml poetry.lock ./
 RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
 
-FROM python:3.12.0-slim
+FROM python:3.12.1-slim
 ENV APP_HOST ${APP_HOST:-"0.0.0.0"}
 ENV APP_PORT ${APP_PORT:-8000}
 WORKDIR /api
