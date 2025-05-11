@@ -11,12 +11,10 @@ updates:
       labels: ["i_hate_github_action"]
 
       schedule:
-          interval: "cron"
-          cronjob: "*/5 * * * *"
+          interval: "daily"
 
     - package-ecosystem: docker
       directory: /
       labels: [ ]
       schedule:
-          interval: "cron"
-          cronjob: "*/5 * * * *"
+          interval: "daily"
